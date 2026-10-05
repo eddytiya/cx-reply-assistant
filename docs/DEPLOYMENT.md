@@ -1,14 +1,22 @@
 # Assessment deployment on Render
 
-Deploy React and FastAPI as one Docker web service. PostgreSQL is a separate managed database. The browser calls `/api` on the same HTTPS origin; session cookies remain HttpOnly and Secure.
+Deploy React and FastAPI as one native Python web service, without Docker. PostgreSQL is a separate managed database. The browser calls `/api` on the same HTTPS origin; session cookies remain HttpOnly and Secure.
 
 1. Sign in to Render with GitHub.
 2. Create a PostgreSQL database named `cx-reply-assistant-db`. Choose a region and plan. The free database expires after 30 days.
-3. Create a Web Service from `eddytiya/cx-reply-assistant`, branch `main`. Choose Docker, repository root, and `./Dockerfile`. Choose the same region as the database. Leave the Docker command override empty.
+3. Create a Web Service from `eddytiya/cx-reply-assistant`, branch `main`. Choose **Python 3** as the language/runtime. Leave Root Directory blank so both frontend and backend files are available. Choose the same region as the database. Set these commands:
+
+   Build command: `pip install -r backend/requirements.txt && python scripts/build_render.py`
+
+   Start command: `cd backend && python -m app.start_deployed`
+
+   These commands run on Render's Linux server. Your local terminal can remain Windows CMD.
 4. Add these service environment variables using the database connection details. Use the database's internal hostname when both services are on Render in the same region.
 
 | Variable | Value |
 | --- | --- |
+| PYTHON_VERSION | 3.12.12 |
+| NODE_VERSION | 24.11.0 |
 | DB_HOST | Hosted database hostname |
 | DB_PORT | 5432 |
 | DB_NAME | Hosted database name |

@@ -4,6 +4,7 @@
 .venv/
 node_modules/
 dist/
+backend/static/
 __pycache__/
 *.py[cod]
 .pytest_cache/

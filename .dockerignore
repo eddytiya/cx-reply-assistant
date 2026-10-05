@@ -1,9 +1,0 @@
-.git
-**/.env
-**/.env.*
-**/.venv
-**/node_modules
-**/dist
-**/__pycache__
-**/*.pyc
-docs
