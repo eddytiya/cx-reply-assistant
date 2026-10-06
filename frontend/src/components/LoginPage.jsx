@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { api } from "../api";
+import { usernameError } from "../username";
 
 export default function LoginPage({ onLoggedIn, onRegister, initialUsername = "", notice = "" }) {
   const [role, setRole] = useState("customer");
@@ -13,6 +14,8 @@ export default function LoginPage({ onLoggedIn, onRegister, initialUsername = ""
   async function login(event) {
     event.preventDefault();
     if (lock.current || !username.trim() || !password) return;
+    const validationError = usernameError(username);
+    if (validationError) { setError(validationError); return; }
     lock.current = true;
     setBusy(true);
     setError("");
@@ -53,7 +56,8 @@ export default function LoginPage({ onLoggedIn, onRegister, initialUsername = ""
         <form onSubmit={login}>
           <fieldset disabled={busy}>
             <label htmlFor="login-username">Username</label>
-            <input id="login-username" name="username" autoComplete="username" autoCapitalize="none" spellCheck={false} maxLength={60} required value={username} onChange={(event) => setUsername(event.target.value)} />
+            <input id="login-username" name="username" autoComplete="username" autoCapitalize="none" spellCheck={false} maxLength={60} required aria-describedby="login-username-help" value={username} onChange={(event) => { setUsername(event.target.value); setError(""); }} />
+            <small id="login-username-help">Use your registered username, not your email address.</small>
             <label htmlFor="login-password">Password</label>
             <div className="password-field">
               <input id="login-password" name="password" type={showPassword ? "text" : "password"} autoComplete="current-password" maxLength={128} required value={password} onChange={(event) => setPassword(event.target.value)} />

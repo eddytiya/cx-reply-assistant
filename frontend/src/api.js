@@ -38,7 +38,12 @@ export async function api(path, options = {}) {
       typeof detail === "string"
         ? detail
         : Array.isArray(detail)
-          ? detail.map((item) => item.msg).join(" ")
+          ? detail.map((item) => {
+              if (item.type === "string_pattern_mismatch") {
+                return "Please check the format of your input.";
+              }
+              return item.msg?.replace(/^Value error, /, "") || "Please check your input.";
+            }).join(" ")
           : detail?.message || `Request failed (${response.status}).`;
 
     const error = new Error(message);

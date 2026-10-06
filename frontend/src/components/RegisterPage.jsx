@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { api, useLoad } from "../api";
+import { usernameError } from "../username";
 
 export default function RegisterPage({ onRegistered, onLogin }) {
   const brands = useLoad("/auth/brands");
@@ -19,6 +20,8 @@ export default function RegisterPage({ onRegistered, onLogin }) {
     if (lock.current) return;
     setError("");
     if (!form.name.trim()) { setError("Enter your name."); return; }
+    const validationError = usernameError(form.username);
+    if (validationError) { setError(validationError); return; }
     if (form.password !== form.confirmPassword) { setError("Passwords do not match."); return; }
     lock.current = true;
     setBusy(true);
@@ -49,7 +52,7 @@ export default function RegisterPage({ onRegistered, onLogin }) {
           <fieldset disabled={busy || brands.loading || Boolean(brands.error)}>
             <label>Full name<input name="name" value={form.name} onChange={change} autoComplete="name" maxLength={120} required /></label>
             <label>Email<input name="email" type="email" value={form.email} onChange={change} autoComplete="email" required /></label>
-            <label>Username<input name="username" value={form.username} onChange={change} autoComplete="username" autoCapitalize="none" spellCheck={false} minLength={3} maxLength={60} pattern="[a-zA-Z0-9_.-]+" required aria-describedby="username-help" /></label>
+            <label>Username<input name="username" value={form.username} onChange={change} autoComplete="username" autoCapitalize="none" spellCheck={false} maxLength={60} required aria-describedby="username-help" /></label>
             <small id="username-help">Use letters, numbers, dots, underscores, or hyphens.</small>
             <label>Brand<select name="brand_id" value={form.brand_id} onChange={change} required><option value="">Select a brand</option>{(brands.data || []).map((brand) => <option key={brand.id} value={brand.id}>{brand.name}</option>)}</select></label>
             <label>Password<input name="password" type={showPassword ? "text" : "password"} value={form.password} onChange={change} autoComplete="new-password" minLength={8} maxLength={128} required /></label>

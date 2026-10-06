@@ -1,4 +1,5 @@
 import secrets
+import re
 from dataclasses import asdict
 from datetime import datetime, timedelta, timezone
 from typing import Literal
@@ -22,12 +23,21 @@ router = APIRouter(prefix="/auth", tags=["Authentication"], dependencies=[Depend
 
 class UsernameRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    username: str = Field(min_length=3, max_length=60, pattern=r"^[a-zA-Z0-9_.-]+$")
+    username: str = Field(min_length=3, max_length=60)
 
     @field_validator("username", mode="before")
     @classmethod
     def normalize_username(cls, value):
         return value.strip().lower() if isinstance(value, str) else value
+
+    @field_validator("username")
+    @classmethod
+    def validate_username(cls, value):
+        if "@" in value:
+            raise ValueError("Enter your username, not your email address. Use the username you chose when registering.")
+        if not re.fullmatch(r"[a-zA-Z0-9_.-]+", value):
+            raise ValueError("Your username can contain only letters, numbers, dots, underscores, and hyphens.")
+        return value
 
 
 class LoginRequest(UsernameRequest):
