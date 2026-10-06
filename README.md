@@ -45,6 +45,8 @@ Open http://localhost:5173. API documentation: http://127.0.0.1:8000/docs.
 
 The local demo admin credentials in `.env.example` are `admin` / `admin`. Register a customer to create a separate customer profile and conversation for the selected brand. Existing seeded customer profiles do not automatically have login accounts. New registrations do not create orders.
 
+For reviewer access to the fictional Meera Patel profile, run `python -m app.seed_demo_login` after the original seed. Hosted startup does this automatically. Choose Customer and log in with username `meera.demo` and password `MeeraDemo2026!`. This intentionally shared demo login can access only Meera's Adidas conversation and order. It must contain only fictional data. Meera's original 20-day-old order demonstrates the expired-refund review fallback; use a shipping question to demonstrate generation that does not require refund eligibility.
+
 ## Verification
 
 From `backend`:

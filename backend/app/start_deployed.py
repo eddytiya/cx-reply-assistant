@@ -12,6 +12,7 @@ def main():
         ("app.seed", []),
         ("app.seed_scenarios", []),
         ("app.seed_admin", []),
+        ("app.seed_demo_login", []),
     ):
         subprocess.run([sys.executable, "-m", module, *args], check=True)
     uvicorn.run("app.deployed:app", host="0.0.0.0", port=int(os.environ.get("PORT", "8000")))
